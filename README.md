@@ -46,7 +46,7 @@ The library works by building up a list which acts as a computation graph. All o
 
 (See commented blocks in feed_forward_nn.py for code and to run)
 
-![Example training graphs] (https://github.com/olliejday/Feed-Forward-Neural-Network-Library/blob/master/fig1.jpg "Example training graphs")
+![Example training graphs](https://github.com/olliejday/Feed-Forward-Neural-Network-Library/blob/master/fig1.jpg 'Example training graphs')
 
 #### DEPENDENCIES
 Numpy
