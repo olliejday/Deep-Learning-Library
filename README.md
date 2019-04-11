@@ -1,4 +1,4 @@
-# Feed-Forward-Neural-Network-Library
+# Deep Learning-Library
 
 A modular Neural Network library. 
 
