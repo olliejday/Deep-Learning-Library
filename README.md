@@ -1,57 +1,91 @@
 # Feed-Forward-Neural-Network-Library
 
-A modular Feedforward Network library in Python, written using Numpy. A basic set of affine layers and non-linear activations, regularisations, optimisation algorithms and cost functions can be combined in a fairly flexible order to produce a FFNN.
+A modular Neural Network library. 
 
-#### Current options
+### Dependencies:
 
-ACTIVATIONS: ReLU, Softmax, Sigmoid
-LOSS: Mean Squared Error (MSE), Cross Entropy (for Softmax)
-OPTIMISERS: ADAM, Gradient Descent
-REGULARISATION: Weight Decay
-Planned additions: Dropout
-
-#### DOCUMENTATION
-
-Init a graph object by ```g = Graph()```
-
-Add nodes with the ```g.add_node()``` method
-
-Layers can be added in the following patterns, described in ```add_node```:
-
-Start with a ```Linear()``` node
-
-Then an activation node eg. ```ReLU()``` or ```Sigmoid()```
+* Numpy (linear algebra)
+* (optional) Matplotlib (for some example plots)
 
 
-To add regularization, wrap the regularization op to the linear node. For example, the following syntax after adding a linear node will add a ```WeightDecay``` to that unit:
-	
-	```g.graph[-1].add_regularization(WeightDecay, **kwargs) ```
+### Usage:
 
-where ```**kwargs``` can include name, lambda weight etc. Note the use of the class ```WeightDecay``` without brackets as we instantiate the regularization class within linear in order to pass it self and wrap to the linear object.
+See ```Examples.py``` for example usage.
 
-Add a final layer with a ```Linear()``` and output activation eg. ```Sigmoid()``` or ```Softmax()```
+Keras inspired syntax.
 
-Finally a loss operation eg. ```MSE()``` or ```CrossEntropySoftmax()```
+Typical use will consist of:
 
-To train add an optimizer eg. ```opt = GradientDescent()```
+1. Add an input layer, for ```Ni``` dimensional input vectors:
 
-Then call ```opt.update(inputs, labels, graph)```
+    ```inputs = Inputs(Ni)```
 
-Finally to run on test output simply call ```graph.forward_propagate(inputs, forward_only=True)```
+2. Add some dense (linear) layers with activations:
 
+    ```
+    x = Dense(Ni, N1)(inputs)
+    x = ReLU()(x)
+    x = Dense(N1, N2)(x)
+    x = ReLU()(x)
+    ```
 
-The library works by building up a list which acts as a computation graph. All operations have forward and backward pass operations which can be used in forward or backwards order to compute outputs or gradients respectively.
+3. Add an output layer:
+ 
+     ```x = Softmax()(x)```
+     
+     Or leave it on linear for regression.
+ 
+4. Add a loss.
 
-#### EXAMPLE USAGE
+    Over ```No``` dimension output vectors.
+    
+    For classification with softmax:
+    ```loss = CrossEntropySoftmax(No)```
+    
+    For regression:
+    ```loss = MeanSquaredError(No)```
 
-(See commented blocks in feed_forward_nn.py for code and to run)
+5. Build the model.
+    ```model = Model(inputs=inputs, outputs=x)```
+    
+6. Add and optimizer to your model and loss.
+    ```opt = SGD(model, loss)```
+    
+7. Train for ```iters``` iterations on ```Xtrn, Ytrn``` dataset.
 
-![Example training graphs](https://github.com/olliejday/Feed-Forward-Neural-Network-Library/blob/master/fig1.jpg 'Example training graphs')
+    ```
+    for i in range(iters): 
+        opt.step(Xtrn, Ytrn)
+    ```
+8. Predict on ```Xtst``` test data set.
+    ```outputs = model.predict(Xtst)```
+    
+### Currently Supported
 
-#### DEPENDENCIES
-Numpy
+##### Layers
+* Inputs
+* Dense
 
-Matplotlib is optional for plots in example code
+##### Weight Initialisers
+* Xavier Uniform
 
-#### Adding CNN and RNN soon. 
+##### Bias Initialisers
+* Zeroes
 
+##### Activations
+* ReLU
+* Softmax
+
+##### Losses
+* Cross Entropy
+* Mean Squared Error
+
+##### Optimizers
+* Stochastic gradient descent (SGD)
+    
+### Improvements
+
+Adding CNN and RNN.
+    
+
+ 

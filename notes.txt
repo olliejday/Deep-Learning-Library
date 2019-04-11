@@ -1,5 +1,0 @@
-In activations have eg. ReLU - each with forward and grad methods
-
-In FF have Dense() that does the weights and bias part.
-
-In Graph have a graph that builds up layers and does the chaining of fwd and back prop
