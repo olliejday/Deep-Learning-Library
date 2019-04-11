@@ -2,7 +2,21 @@ import numpy as np
 from Core import Layer
 
 
-class ReLU(Layer):
+class Activation(Layer):
+    def __call__(self, node):
+        """
+        Overwrite call to setup based on previous layer.
+        We set the size based on the last layer because an activation is element wise so doesn't change output shape
+        :param node: the node to follow this layer in the model
+        :return: this node
+        """
+        # call super layer setup
+        Layer.__call__(self, node)
+        self.size_l = self.previous.size_l
+        return self
+
+
+class ReLU(Activation):
     def __init__(self, name="relu"):
         """
         ReLU layer
@@ -34,7 +48,7 @@ class ReLU(Layer):
         return np.squeeze(g * np.array(x > 0).astype(float))
 
 
-class Softmax(Layer):
+class Softmax(Activation):
     def __init__(self, name="softmax"):
         """
         Softmax output layer

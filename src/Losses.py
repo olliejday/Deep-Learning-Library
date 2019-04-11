@@ -2,13 +2,25 @@ import numpy as np
 from Core import Layer
 
 
-class CrossEntropy(Layer):
-    def __init__(self, size_l, name="cross entropy loss"):
+class Loss(Layer):
+    def __call__(self, node):
+        """
+        Overwrite call to setup based on previous layer.
+        We set the size based on the last layer because a loss doesn't change output shape
+        :param node: the node to follow this layer in the model
+        :return: this node
+        """
+        # call super layer setup
+        Layer.__call__(self, node)
+        self.size_l = self.previous.size_l
+        return self
+
+
+class CrossEntropy(Loss):
+    def __init__(self, name="cross entropy loss"):
         """
         Loss function for classification
-        :param targets: the targets for the data
         """
-        self.size_l = size_l
         self.name = name
 
     def __str__(self):
@@ -35,13 +47,11 @@ class CrossEntropy(Layer):
         return - targets / logits
 
 
-class CrossEntropySoftmax(Layer):
-    def __init__(self, size_l, name="cross entropy loss"):
+class CrossEntropySoftmax(Loss):
+    def __init__(self, name="cross entropy loss"):
         """
         Loss function for classification
-        :param targets: the targets for the data
         """
-        self.size_l = size_l
         self.name = name
 
     def __str__(self):
@@ -68,13 +78,11 @@ class CrossEntropySoftmax(Layer):
         return np.dot(-np.eye(logits.shape[0]) + logits[None].T, targets)
 
 
-class MeanSquaredError(Layer):
-    def __init__(self, size_l, name="mean squared error loss"):
+class MeanSquaredError(Loss):
+    def __init__(self, name="mean squared error loss"):
         """
         Loss function for regression
-        :param targets: the targets for the data
         """
-        self.size_l = size_l
         self.name = name
 
     def __str__(self):

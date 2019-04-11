@@ -12,12 +12,12 @@ def run_XOR_regression():
     Run a simple XOR example regression
     """
     inputs = Inputs(2)
-    x = Dense(2, 32)(inputs)
+    x = Dense(32)(inputs)
     x = ReLU()(x)
-    x = Dense(32, 1)(x)
+    x = Dense(1)(x)
     m = Model(inputs, x)
     print(m)
-    ls = MeanSquaredError(1)
+    ls = MeanSquaredError()
     opt = SGD(m, ls)
     X = np.array([[0, 0],
                   [0, 1],
@@ -28,22 +28,22 @@ def run_XOR_regression():
                   [1],
                   [0]])
     logits = m.predict(X)
-    acc = ls.forward(logits, Y)
+    mse = ls.forward(logits, Y)
     print("logits", logits)
-    print("acc", acc)
+    print("mse", -mse)
     ts = [0]
-    accs = [acc]
+    mses = [mse]
     for i in range(1000):
         ts.append(i+1)
         opt.step(X, Y)
         logits = m.predict(X)
-        acc = ls.forward(logits, Y)
-        accs.append(acc)
+        mse = ls.forward(logits, Y)
+        mses.append(mse)
 
     print("logits", logits)
-    print("acc", acc)
-    plt.plot(ts, accs)
-    plt.xlabel("Test Accuracy")
+    print("mse", -mse)
+    plt.plot(ts, mses)
+    plt.xlabel("Test MSE")
     plt.ylabel("Number of timesteps")
     plt.show()
 
@@ -52,13 +52,13 @@ def run_XOR_classification():
     Run a simple XOR example classification
     """
     inputs = Inputs(2)
-    x = Dense(2, 16)(inputs)
+    x = Dense(16)(inputs)
     x = ReLU()(x)
-    x = Dense(16, 2)(x)
+    x = Dense(2)(x)
     x = Softmax()(x)
     m = Model(inputs, x)
     print(m)
-    ls = CrossEntropySoftmax(2)
+    ls = CrossEntropySoftmax()
     opt = SGD(m, ls, 1e-2)
     X = np.array([[0, 0],
                   [0, 1],
@@ -106,20 +106,20 @@ def run_MNIST():
         Y[range(len(labels)), labels] = 1
 
         return X, Y
-    curdir = os.path.curdir
+    curdir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     Xtst, Ytst = read_data(curdir + '/datasets/mnist_train_100.csv')
     Xtrn, Ytrn = read_data(curdir + '/datasets/mnist_test_10.csv')
 
     inputs = Inputs(784)
-    x = Dense(784, 128)(inputs)
+    x = Dense(128)(inputs)
     x = ReLU()(x)
-    x = Dense(128, 128)(x)
+    x = Dense(128)(x)
     x = ReLU()(x)
-    x = Dense(128, 10)(x)
+    x = Dense(10)(x)
     x = Softmax()(x)
     m = Model(inputs, x)
     print(m)
-    ls = CrossEntropySoftmax(10)
+    ls = CrossEntropySoftmax()
     opt = SGD(m, ls)
     logits = m.predict(Xtst)
     acc = np.sum(np.argmax(logits, axis=1) == np.argmax(Ytst, axis=1)) / Ytst.shape[0]
@@ -145,6 +145,10 @@ def run_MNIST():
 
 
 if __name__ == "__main__":
-    # run_XOR_regression()
-    # run_XOR_classification()
-    run_MNIST()
+    EXAMLPE_TO_RUN = 3
+    if EXAMLPE_TO_RUN == 1:
+        run_XOR_regression()
+    if EXAMLPE_TO_RUN == 2:
+        run_XOR_classification()
+    if EXAMLPE_TO_RUN == 3:
+        run_MNIST()

@@ -29,22 +29,32 @@ class Inputs:
 
 
 class Dense(Layer):
-    def __init__(self, size_l_prev, size_l, weights_initialiser="xavier_uniform", bias_initialiser="zeros",
-                 name="dense"):
+    def __init__(self, size_l, weights_initialiser="xavier_uniform", bias_initialiser="zeros", name="dense"):
         """
         Init a Dense layer (WX + b)
-        :param size_l_prev: size of prev layer (inputs)
-        :param size_l: size of outputs
+        :param size_l: number of units to have in this layer
         :param weights_initialiser: weight initialiser function (default xavier_uniform)
         :param bias_initialiser: bias initialiser function (default zeros)
         :param name: name of layer
         """
-        self.W = weight_init(weights_initialiser, size_l_prev, size_l)
-        self.b = bias_init(bias_initialiser, size_l)
-        self.size_l_prev = size_l_prev
         self.size_l = size_l
         self._type = "dense"
         self.name = name
+        self.weights_initialiser = weights_initialiser
+        self.bias_initialiser = bias_initialiser
+
+    def __call__(self, node):
+        """
+        Overwrite call to setup based on previous layer
+        :param node: the node to follow this layer in the model
+        :return: this node
+        """
+        # call super layer setup
+        Layer.__call__(self, node)
+        self.size_l_prev = self.previous.size_l
+        self.W = weight_init(self.weights_initialiser, self.size_l_prev, self.size_l)
+        self.b = bias_init(self.bias_initialiser, self.size_l)
+        return self
 
     def __str__(self):
         return "{} :: {}, {}".format(self.name, self.size_l_prev, self.size_l)
