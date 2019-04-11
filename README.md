@@ -23,9 +23,9 @@ Typical use will consist of:
 2. Add some dense (linear) layers with activations:
 
     ```
-    x = Dense(Ni, N1)(inputs)
+    x = Dense(N1)(inputs)
     x = ReLU()(x)
-    x = Dense(N1, N2)(x)
+    x = Dense(N2)(x)
     x = ReLU()(x)
     ```
 
@@ -37,13 +37,11 @@ Typical use will consist of:
  
 4. Add a loss.
 
-    Over ```No``` dimension output vectors.
-    
     For classification with softmax:
-    ```loss = CrossEntropySoftmax(No)```
+    ```loss = CrossEntropySoftmax()```
     
     For regression:
-    ```loss = MeanSquaredError(No)```
+    ```loss = MeanSquaredError()```
 
 5. Build the model.
     ```model = Model(inputs=inputs, outputs=x)```
