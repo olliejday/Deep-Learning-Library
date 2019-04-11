@@ -1,4 +1,4 @@
-# Deep Learning-Library
+# Deep Learning Library
 
 A modular Neural Network library. 
 
